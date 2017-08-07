@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="edu.fullsail.mgems.cse.pather.ramoslebronanthony.MainActivity"
+    android:weightSum="1">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <edu.fullsail.mgems.cse.pather.ramoslebronanthony.DrawSurface
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id = "@+id/ButtonLayout"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:weightSum="1">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.50"
+            android:text="@string/Options"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.50"
+            android:text="@string/Credits"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
