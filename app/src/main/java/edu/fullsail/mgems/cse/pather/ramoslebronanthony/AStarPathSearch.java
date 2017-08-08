@@ -26,9 +26,9 @@ public class AStarPathSearch {
     PriorityQueue<PlannerNode> m_OpenEnhancer;
 
 
-    void Initaililizer(ArrayList<NavCell> _tileList, int Row, int Column)
+    void Initaililizer(ArrayList<NavCell> _tileList[][], int Row, int Column)
     {
-
+        
     }
 
     void Enter (NavCell Start, NavCell End)
