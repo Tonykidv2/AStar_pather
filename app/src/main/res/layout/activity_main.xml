@@ -32,12 +32,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.50"
-            android:text="@string/Options"/>
+            android:text="@string/Options"
+            android:id="@+id/options"/>
+
         <Button
+            android:id="@+id/credits"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.50"
-            android:text="@string/Credits"/>
+            android:text="@string/Credits" />
 
     </LinearLayout>
 
