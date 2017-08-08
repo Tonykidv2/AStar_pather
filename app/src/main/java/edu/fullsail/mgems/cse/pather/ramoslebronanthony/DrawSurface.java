@@ -119,6 +119,8 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
         {
             //DoSomething Here
+
+
             invalidate();
         }
         return false;
