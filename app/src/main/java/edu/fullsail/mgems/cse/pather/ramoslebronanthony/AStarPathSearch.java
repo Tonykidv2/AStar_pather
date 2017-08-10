@@ -128,9 +128,9 @@ public class AStarPathSearch {
 
     float Estimate(NavCell start, NavCell goal)
     {
-        double x = (goal.getM_Center().x - start.getM_Center().x);
+        double x = (goal.getM_Bounds().centerX() - start.getM_Bounds().centerX());
         x *= x;
-        double y = (goal.getM_Center().y - start.getM_Center().y);
+        double y = (goal.getM_Bounds().centerY() - start.getM_Bounds().centerY());
         y *= y;
 
         return (float)Math.sqrt(x + y);
