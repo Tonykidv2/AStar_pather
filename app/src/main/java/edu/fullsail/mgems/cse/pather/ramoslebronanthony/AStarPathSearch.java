@@ -24,75 +24,80 @@ public class AStarPathSearch {
     boolean m_FoundIt;
     float hWeight = 1.2f;
 
-    void Init(NavCell _tileList[][], int Row, int Column)
+    boolean Init(NavCell _tileList[][], int Row, int Column)
     {
         m_Tiles = new ArrayList<SearchNode>();
         m_SearchGraph = new HashMap<NavCell, SearchNode>();
+        int r = 0;
+        int c = 0;
+        try {
+            for (r = 0; r < Row; r++) {
+                for (c = 0; c < Column; c++) {
 
-        for (int r = 0; r < Row; r++)
-        {
-            for (int c = 0; c < Column; c++)
-            {
+                    SearchNode newNode = new SearchNode();
+                    newNode.m_Neighbors = new ArrayList<NavCell>();
+                    newNode.m_Cell = _tileList[r][c];
 
-                SearchNode newNode = new SearchNode();
+                    if (r == 0 && c == 0)
+                    {
+                        newNode.m_Neighbors.add(_tileList[r][c + 1]);
+                        newNode.m_Neighbors.add(_tileList[r + 1][c]);
+                    }
+                    else if (c == Column - 1 && r == Row - 1)
+                    {
+                        newNode.m_Neighbors.add(_tileList[r][c - 1]);
+                        newNode.m_Neighbors.add(_tileList[r - 1][c]);
+                    }
+                    else if (r == 0 && c == Column - 1) {
+                        newNode.m_Neighbors.add(_tileList[r][c - 1]);
+                        newNode.m_Neighbors.add(_tileList[r + 1][c]);
+                    }
+                    else if (r == Row - 1 && c == 0) {
+                        newNode.m_Neighbors.add(_tileList[r][c + 1]);
+                        newNode.m_Neighbors.add(_tileList[r - 1][c]);
+                    }
+                    else if (c == 0) {
+                        newNode.m_Neighbors.add(_tileList[r + 1][c]);
+                        newNode.m_Neighbors.add(_tileList[r - 1][c]);
+                        newNode.m_Neighbors.add(_tileList[r][c + 1]);
+                    }
+                    else if (r == 0) {
+                        newNode.m_Neighbors.add(_tileList[r + 1][c]);
+                        newNode.m_Neighbors.add(_tileList[r][c + 1]);
+                        newNode.m_Neighbors.add(_tileList[r][c - 1]);
+                    }
+                    else if (r == Row - 1) {
+                        newNode.m_Neighbors.add(_tileList[r - 1][c]);
+                        newNode.m_Neighbors.add(_tileList[r][c + 1]);
+                        newNode.m_Neighbors.add(_tileList[r][c - 1]);
+                    }
+                    else if (c == Column - 1) {
+                        newNode.m_Neighbors.add(_tileList[r + 1][c]);
+                        newNode.m_Neighbors.add(_tileList[r - 1][c]);
+                        newNode.m_Neighbors.add(_tileList[r][c - 1]);
+                    }
+                    else {
+                        newNode.m_Neighbors.add(_tileList[r][c + 1]);
+                        newNode.m_Neighbors.add(_tileList[r][c - 1]);
+                        newNode.m_Neighbors.add(_tileList[r + 1][c]);
+                        newNode.m_Neighbors.add(_tileList[r - 1][c]);
+                    }
 
-                newNode.m_Cell = _tileList[r][c];
-
-                if(r == 0 && c == 0)
-                {
-                    newNode.m_Neighbors.add(_tileList[r][c+1]);
-                    newNode.m_Neighbors.add(_tileList[r +1][c]);
+                    m_Tiles.add(newNode);
                 }
-                else if(r == 0 && c == Column)
-                {
-                    newNode.m_Neighbors.add(_tileList[r][c -1]);
-                    newNode.m_Neighbors.add(_tileList[r + 1][c]);
-                }
-                else if(r == Row && c == 0)
-                {
-                    newNode.m_Neighbors.add(_tileList[r][c + 1]);
-                    newNode.m_Neighbors.add(_tileList[r - 1][c]);
-                }
-                else if(c == 0)
-                {
-                    newNode.m_Neighbors.add(_tileList[r + 1][c]);
-                    newNode.m_Neighbors.add(_tileList[r - 1][c]);
-                    newNode.m_Neighbors.add(_tileList[r][c + 1]);
-                }
-                else if(r == 0)
-                {
-                    newNode.m_Neighbors.add(_tileList[r + 1][c]);
-                    newNode.m_Neighbors.add(_tileList[r][c + 1]);
-                    newNode.m_Neighbors.add(_tileList[r][c - 1]);
-                }
-                else if(r == Row - 1)
-                {
-                    newNode.m_Neighbors.add(_tileList[r - 1][c]);
-                    newNode.m_Neighbors.add(_tileList[r][c + 1]);
-                    newNode.m_Neighbors.add(_tileList[r][c - 1]);
-                }
-                else if(c == Column - 1)
-                {
-                    newNode.m_Neighbors.add(_tileList[r + 1][c]);
-                    newNode.m_Neighbors.add(_tileList[r - 1][c]);
-                    newNode.m_Neighbors.add(_tileList[r][c - 1]);
-                }
-                else
-                {
-                    newNode.m_Neighbors.add(_tileList[r][c + 1]);
-                    newNode.m_Neighbors.add(_tileList[r][c - 1]);
-                    newNode.m_Neighbors.add(_tileList[r + 1][c]);
-                    newNode.m_Neighbors.add(_tileList[r - 1][c]);
-                }
-
-                m_Tiles.add(newNode);
             }
         }
-
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.out.println("Error Init in Astar at " + r + " " + c);
+            return false;
+        }
         for (int i = 0; i < m_Tiles.size(); i++)
         {
             m_SearchGraph.put(m_Tiles.get(i).m_Cell, m_Tiles.get(i));
         }
+        return true;
     }
 
     void Enter (NavCell Start, NavCell End)
@@ -115,7 +120,7 @@ public class AStarPathSearch {
         starter.m_Parent = null;
         starter.m_Vertex = m_Start;
 
-        m_OpenEnhancer = new PriorityQueue<PlannerNode>();
+        m_OpenEnhancer = new PriorityQueue<PlannerNode>(1, new SortingPlannerNodes());
         m_OpenEnhancer.add(starter);
 
         m_VisitedList = new HashMap<NavCell, PlannerNode>();

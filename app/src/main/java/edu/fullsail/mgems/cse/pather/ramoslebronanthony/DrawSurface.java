@@ -32,6 +32,7 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
 
     Paint p = new Paint();
     private NavCell m_TileMap[][];
+    private ArrayList<NavCell> m_path = null;
     private NavCell m_CellStart;
     private NavCell m_CellEnd;
     private Bitmap m_StartIcon;
@@ -71,7 +72,6 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
         m_StartIcon = BitmapFactory.decodeResource(getResources(), R.drawable.start);
         m_EndIcon = BitmapFactory.decodeResource(getResources(), R.drawable.end);
         m_Shakey = BitmapFactory.decodeResource(getResources(), R.drawable.shakey);
-
         //Make sure onDraw is called when I touch screen
         setWillNotDraw(false);
     }
@@ -110,6 +110,16 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
             }
         }
 
+        if(m_path != null)
+        {
+            for (int i = 0; i < m_path.size(); i++)
+            {
+                p.setColor(Color.GREEN);
+                p.setStyle(Paint.Style.FILL);
+                canvas.drawCircle(m_path.get(i).getM_Bounds().centerX(), m_path.get(i).getM_Bounds().centerY(), 5, p);
+                canvas.drawRect(m_path.get(i).getM_Bounds(), p);
+            }
+        }
         if(m_CellStart != null && m_Shakey != null)
         {
             //How To draw the Pin Icons
@@ -125,8 +135,13 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
 
         if(m_CellEnd != null && m_EndIcon != null)
         {
-            canvas.drawBitmap(m_EndIcon,m_CellStart.getM_Bounds().left + 12,
-                    m_CellStart.getM_Bounds().top - (int)(m_CellSize/1.5), p);
+            canvas.drawBitmap(m_EndIcon,m_CellEnd.getM_Bounds().left + 12,
+                    m_CellEnd.getM_Bounds().top - (int)(m_CellSize/1.5), p);
+        }
+
+        if(m_path != null)
+        {
+            m_CellStart = m_CellEnd;
         }
     }
 
@@ -186,21 +201,46 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
         {
             //DoSomething Here
-            //AStarPathSearch pather = new AStarPathSearch();
-            for (int j = 0; j<m_MapRows; j++)
+            AStarPathSearch pather = new AStarPathSearch();
+            int j,i;
+            try
             {
-                for (int i = 0; i<m_MapCollumn; i++)
+                for (j = 0; j<m_MapRows; j++)
                 {
-                    if(m_TileMap[j][i].getM_Bounds().contains((int)(motionEvent.getX()), (int)(motionEvent.getY())))
+                    for (i = 0; i<m_MapCollumn; i++)
                     {
-
+                        if(m_TileMap[j][i].getM_Bounds().contains((int)(motionEvent.getX()), (int)(motionEvent.getY())))
+                        {
+                            m_CellEnd = m_TileMap[j][i];
+                            break;
+                        }
                     }
                 }
             }
-            //pather.Init(m_TileMap, m_MapRows, m_MapCollumn);
-            //pather.Enter(m_StartIcon, );
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                System.out.println("Looping Error");
+            }
 
-            invalidate();
+            try
+            {
+                if(pather.Init(m_TileMap, m_MapRows, m_MapCollumn))
+                {
+                    pather.Enter(m_CellStart, m_CellEnd);
+                    pather.update(100);
+                }
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                System.out.println("Error With Path Search");
+            }
+            if(pather.IsDone())
+            {
+                m_path = pather.Solution();
+                invalidate();
+            }
         }
         return false;
     }
