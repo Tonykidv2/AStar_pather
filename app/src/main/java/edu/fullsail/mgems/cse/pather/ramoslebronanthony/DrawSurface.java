@@ -255,6 +255,10 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
                 newpath = true;
                 invalidate();
             }
+            else
+            {
+                Toast.makeText(getContext(), "No Path Found", Toast.LENGTH_SHORT).show();
+            }
         }
         return false;
     }
@@ -300,5 +304,51 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
     }
 
 
+    public void AlterMap(int id)
+    {
+       switch (id)
+       {
+           case 0:
+               int rand = (int)Math.floor((Math.random() * 20) + 10);
+               //Make Sure any recent changes to the map is set back to default
+               int midRow = m_MapRows / 2;
+               for (int j=0; j<m_MapRows; j++)
+                   for (int i=0; i<m_MapCollumn; i++)
+                   {
+                       if(j == midRow && i>0 && i<m_MapCollumn-1)
+                       {
+                           m_TileMap[j][i].m_Weight = 0;
+                       }
+                       else
+                       {
+                           m_TileMap[j][i].m_Weight = 1;
+                       }
+                   }
+               //Picking 'rand' number of cells and setting them to impassable
+               for (int b = 0; b < rand; b++)
+               {
+                   int row = (int)Math.floor((Math.random() * m_MapRows));
+                   int col = (int)Math.floor((Math.random() * m_MapCollumn));
+                   if(m_CellEnd != null &&!m_CellEnd.getM_Bounds().equals(m_TileMap[row][col].getM_Bounds()))
+                   {
+                        m_TileMap[row][col].m_Weight = 0;
+                   }
+                   else if(m_CellStart != null &&!m_CellStart.getM_Bounds().equals(m_TileMap[row][col].getM_Bounds()))
+                   {
+                       m_TileMap[row][col].m_Weight = 0;
+                   }
+               }
+               if(m_path != null)
+                   m_path.clear();
+               break;
+           case 1:
+               InitMap();
+               if(m_path != null)
+                   m_path.clear();
+               break;
+       }
+
+       invalidate();
+    }
 
 }

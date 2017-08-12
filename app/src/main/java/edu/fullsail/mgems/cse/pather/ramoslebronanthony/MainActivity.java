@@ -13,6 +13,7 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener{
 
     AlertDialog.Builder _dialog;
+    AlertDialog.Builder _dialog2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,26 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 _dialog.dismiss();
             }
         });
+
+        _dialog2 = new AlertDialog.Builder(this);
+        _dialog2.setTitle(" Choose an option ");
+        CharSequence[] list = {" Change impassable blocks ", " Restart "};
+        _dialog2.setItems(list, new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface _dialog, int id)
+            {
+                ((DrawSurface)findViewById(R.id.DrawSurface)).AlterMap(id);
+                _dialog.dismiss();
+            }
+        });
+        _dialog2.setPositiveButton(" Cancel ", new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface _dialog, int id)
+            {
+                _dialog.dismiss();
+            }
+        });
+
     }
 
     @Override
@@ -60,6 +81,16 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         {
             _dialog.show();
         }
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
+                && view.getId() == R.id.options)
+        {
+            _dialog2.show();
+        }
         return false;
+    }
+
+    void printThis(int i)
+    {
+        System.out.println(i);
     }
 }
