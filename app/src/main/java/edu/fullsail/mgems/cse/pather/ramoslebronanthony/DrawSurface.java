@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -117,17 +118,22 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
         {
             for (int i = 0; i < m_path.size(); i++)
             {
-                p.setColor(Color.GREEN);
+                p.setARGB(128,0,255,0);
                 p.setStyle(Paint.Style.FILL);
                 canvas.drawCircle(m_path.get(i).getM_Bounds().centerX(), m_path.get(i).getM_Bounds().centerY(), 5, p);
                 canvas.drawRect(m_path.get(i).getM_Bounds(), p);
+                p.setARGB(255,0,0,0);
             }
         }
+
         if(m_CellStart != null && m_Shakey != null)
         {
             //How To draw the Shakey Icon
-            canvas.drawBitmap(m_Shakey,m_CellStart.getM_Bounds().left - 20,
-                    m_CellStart.getM_Bounds().top - 150, p);
+            //canvas.drawBitmap(m_Shakey,m_CellStart.getM_Bounds().left - 20, m_CellStart.getM_Bounds().top - 150, p);
+            Matrix _mat = new Matrix();
+            _mat.postTranslate(m_CellStart.getM_Bounds().centerX() - m_Shakey.getWidth()/2,
+                    (int)(m_CellStart.getM_Bounds().centerY() - m_Shakey.getHeight()));
+            canvas.drawBitmap(m_Shakey, _mat, p);
         }
         else if(m_CellStart != null && m_StartIcon != null)
         {
@@ -138,8 +144,11 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
 
         if(m_CellEnd != null && m_EndIcon != null)
         {
-            canvas.drawBitmap(m_EndIcon,m_CellEnd.getM_Bounds().left + 12,
-                    m_CellEnd.getM_Bounds().top - (int)(m_CellSize/1.5), p);
+            //canvas.drawBitmap(m_EndIcon,m_CellEnd.getM_Bounds().left + 12, m_CellEnd.getM_Bounds().top - (int)(m_CellSize/1.5), p);
+            Matrix _matr = new Matrix();
+            _matr.postTranslate(m_CellEnd.getM_Bounds().centerX() - m_EndIcon.getWidth()/2,
+                    (int)(m_CellEnd.getM_Bounds().centerY() - m_EndIcon.getHeight()));
+            canvas.drawBitmap(m_EndIcon, _matr, p);
         }
 
 

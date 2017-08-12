@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         {
             _dialog.show();
         }
-        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
+        else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
                 && view.getId() == R.id.options)
         {
             _dialog2.show();
