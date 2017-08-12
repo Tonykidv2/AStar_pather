@@ -1,5 +1,7 @@
 package edu.fullsail.mgems.cse.pather.ramoslebronanthony;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
@@ -31,11 +33,20 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         _dialog = new AlertDialog.Builder(this);
         _dialog.setTitle("Made by");
-        _dialog.setMessage("Anthony Ramoslebron\nMGMS | APM\n8/1/2017");
+        _dialog.setMessage("Anthony Ramoslebron\nMGMS | APM\n8/12/2017");
         _dialog.setPositiveButton(" OK ", new DialogInterface.OnClickListener()
         {
             public void onClick(DialogInterface _dialog, int id)
             {
+                _dialog.dismiss();
+            }
+        });
+        _dialog.setNegativeButton(" Find Source Code ", new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface _dialog, int id)
+            {
+                Intent _intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Tonykidv2/AStar_pather"));
+                startActivity(_intent);
                 _dialog.dismiss();
             }
         });

@@ -18,17 +18,4 @@ public class PlannerNode {
     public float m_GivenCost;
     public float m_FinalCost;
 
-    public Comparator<PlannerNode> PlannerNodeCompareFunction = new Comparator<PlannerNode>()
-    {
-        @Override
-        public int compare(PlannerNode plannerNode, PlannerNode t1) {
-            if(plannerNode.m_FinalCost < t1.m_FinalCost)
-                return -1;
-            if(plannerNode.m_FinalCost > t1.m_FinalCost)
-                return 1;
-
-
-            return 0;
-        }
-    };
 }

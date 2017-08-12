@@ -11,26 +11,29 @@ import java.util.Queue;
 
 public class AStarPathSearch {
 
-    ArrayList<SearchNode> m_Tiles;
-    HashMap<NavCell, SearchNode> m_SearchGraph;
-    Queue<PlannerNode> m_OpenList;
-    HashMap<NavCell, PlannerNode> m_VisitedList;
+    private ArrayList<SearchNode> m_Tiles;
+    private HashMap<NavCell, SearchNode> m_SearchGraph;
+    private HashMap<NavCell, PlannerNode> m_VisitedList;
+    private PriorityQueue<PlannerNode> m_OpenEnhancer;
 
-    PriorityQueue<PlannerNode> m_OpenEnhancer;
+    private SearchNode m_Start;
+    private SearchNode m_End;
 
-    SearchNode m_Start;
-    SearchNode m_End;
-
-    boolean m_FoundIt;
-    float hWeight = 1.2f;
+    private boolean m_FoundIt;
+    private float hWeight = 1.2f;
 
     boolean Init(NavCell _tileList[][], int Row, int Column)
     {
+        //This is not C++ anymore I got to call new now
         m_Tiles = new ArrayList<SearchNode>();
         m_SearchGraph = new HashMap<NavCell, SearchNode>();
+
         int r = 0;
         int c = 0;
-        try {
+        //Creating my SearchGraph
+        //This is where I find all available neighbors for each cell
+        try
+        {
             for (r = 0; r < Row; r++) {
                 for (c = 0; c < Column; c++) {
 
@@ -38,6 +41,7 @@ public class AStarPathSearch {
                     newNode.m_Neighbors = new ArrayList<NavCell>();
                     newNode.m_Cell = _tileList[r][c];
 
+                    //Finding Neighbors depending where they are on the grid
                     if (r == 0 && c == 0)
                     {
                         newNode.m_Neighbors.add(_tileList[r][c + 1]);
@@ -89,6 +93,7 @@ public class AStarPathSearch {
         }
         catch (Exception e)
         {
+            //Something went wrong I'll print in the debugger where I goofed
             e.printStackTrace();
             System.out.println("Error Init in Astar at " + r + " " + c);
             return false;
@@ -104,6 +109,7 @@ public class AStarPathSearch {
     {
         m_FoundIt = false;
 
+        //Search in my searchgraph for my start and end goal
         for (int i = 0; i < m_Tiles.size(); i++)
         {
             if(m_Tiles.get(i).m_Cell == Start)
@@ -116,16 +122,19 @@ public class AStarPathSearch {
             }
         }
 
+        //Creating my first plannerNode to be put in the priority queue
         PlannerNode starter = new PlannerNode();
         starter.m_Parent = null;
         starter.m_Vertex = m_Start;
 
+        //So this is how you create a Priority Queue in Java with a Comparator
         m_OpenEnhancer = new PriorityQueue<PlannerNode>(1, new SortingPlannerNodes());
         m_OpenEnhancer.add(starter);
 
         m_VisitedList = new HashMap<NavCell, PlannerNode>();
         m_VisitedList.put(m_Start.m_Cell, m_OpenEnhancer.peek());
 
+        //.peek() is like .front() for unordered map
         m_OpenEnhancer.peek().m_HeuristicCost = Estimate(m_Start.m_Cell, m_End.m_Cell);
         m_OpenEnhancer.peek().m_GivenCost = 0;
         m_OpenEnhancer.peek().m_FinalCost = m_OpenEnhancer.peek().m_HeuristicCost * hWeight;
@@ -156,7 +165,7 @@ public class AStarPathSearch {
 
             m_OpenEnhancer.remove();
 
-
+            //I found my Goal Cool!!!!
             if(current.m_Vertex == m_End)
             {
                 m_VisitedList.put(current.m_Vertex.m_Cell, current);
@@ -209,8 +218,9 @@ public class AStarPathSearch {
 
     ArrayList<NavCell> Solution()
     {
-        ArrayList<NavCell> result = null; //new ArrayList<NavCell>();
+        ArrayList<NavCell> result = null;
 
+        //Looking to see if we even visited the Goal Cell
         PlannerNode walker = m_VisitedList.get(m_End.m_Cell);
 
         if(walker != null)
@@ -225,6 +235,7 @@ public class AStarPathSearch {
             }
         }
 
+        //Actually returns the path backwards
         return result;
     }
 
@@ -233,7 +244,6 @@ public class AStarPathSearch {
         m_Tiles.clear();
         m_SearchGraph.clear();
         m_OpenEnhancer.clear();
-        m_OpenList.clear();
         m_VisitedList.clear();
 
     }

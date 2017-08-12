@@ -31,8 +31,9 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
 {
 
     Paint p = new Paint();
-    private NavCell m_TileMap[][];
+    private NavCell m_TileMap[][] = null;
     private ArrayList<NavCell> m_path = null;
+    boolean newpath = false;
     private NavCell m_CellStart;
     private NavCell m_CellEnd;
     private Bitmap m_StartIcon;
@@ -72,6 +73,8 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
         m_StartIcon = BitmapFactory.decodeResource(getResources(), R.drawable.start);
         m_EndIcon = BitmapFactory.decodeResource(getResources(), R.drawable.end);
         m_Shakey = BitmapFactory.decodeResource(getResources(), R.drawable.shakey);
+
+
         //Make sure onDraw is called when I touch screen
         setWillNotDraw(false);
     }
@@ -122,15 +125,15 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
         }
         if(m_CellStart != null && m_Shakey != null)
         {
-            //How To draw the Pin Icons
-            canvas.drawBitmap(m_StartIcon,m_CellStart.getM_Bounds().left + 12,
-                    m_CellStart.getM_Bounds().top - (int)(m_CellSize/1.5), p);
+            //How To draw the Shakey Icon
+            canvas.drawBitmap(m_Shakey,m_CellStart.getM_Bounds().left - 20,
+                    m_CellStart.getM_Bounds().top - 150, p);
         }
         else if(m_CellStart != null && m_StartIcon != null)
         {
-            //How To draw the Shakey Icon
-            canvas.drawBitmap(m_Shakey,m_TileMap[0][0].getM_Bounds().left - 20,
-                    m_TileMap[0][0].getM_Bounds().top - 150, p);
+            //How To draw the Pin Icons
+            canvas.drawBitmap(m_StartIcon,m_CellStart.getM_Bounds().left + 12,
+                    m_CellStart.getM_Bounds().top - (int)(m_CellSize/1.5), p);
         }
 
         if(m_CellEnd != null && m_EndIcon != null)
@@ -139,9 +142,11 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
                     m_CellEnd.getM_Bounds().top - (int)(m_CellSize/1.5), p);
         }
 
-        if(m_path != null)
+
+        if(m_path != null && newpath)
         {
             m_CellStart = m_CellEnd;
+            newpath = false;
         }
     }
 
@@ -157,7 +162,8 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
             m_ScreenHeight = canvas.getHeight();
             m_ScreenWidth = canvas.getWidth();
 
-            InitMap();
+            if(m_TileMap == null)
+                InitMap();
 
             invalidate();
             synchronized (surfaceHolder)
@@ -184,13 +190,13 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2)
     {
-        System.out.println("drawing");
+        System.out.println("surfaceChanged");
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder)
     {
-
+        System.out.println("Destroying");
     }
 
     @Override
@@ -205,11 +211,14 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
             int j,i;
             try
             {
+                //Looking for the Cell that the user touched
                 for (j = 0; j<m_MapRows; j++)
                 {
                     for (i = 0; i<m_MapCollumn; i++)
                     {
-                        if(m_TileMap[j][i].getM_Bounds().contains((int)(motionEvent.getX()), (int)(motionEvent.getY())))
+
+                        if(m_TileMap[j][i].getM_Bounds().contains((int)(motionEvent.getX()),
+                                (int)(motionEvent.getY())) && m_TileMap[j][i].m_Weight != 0)
                         {
                             m_CellEnd = m_TileMap[j][i];
                             break;
@@ -223,6 +232,7 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
                 System.out.println("Looping Error");
             }
 
+            //Starting My Search
             try
             {
                 if(pather.Init(m_TileMap, m_MapRows, m_MapCollumn))
@@ -236,9 +246,13 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
                 e.printStackTrace();
                 System.out.println("Error With Path Search");
             }
+
+            //Making sure I found the path
             if(pather.IsDone())
             {
+                //Got my path
                 m_path = pather.Solution();
+                newpath = true;
                 invalidate();
             }
         }
