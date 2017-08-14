@@ -129,7 +129,6 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
         if(m_CellStart != null && m_Shakey != null)
         {
             //How To draw the Shakey Icon
-            //canvas.drawBitmap(m_Shakey,m_CellStart.getM_Bounds().left - 20, m_CellStart.getM_Bounds().top - 150, p);
             Matrix _mat = new Matrix();
             _mat.postTranslate(m_CellStart.getM_Bounds().centerX() - m_Shakey.getWidth()/2,
                     (int)(m_CellStart.getM_Bounds().centerY() - m_Shakey.getHeight()));
@@ -138,13 +137,14 @@ public class DrawSurface extends SurfaceView implements SurfaceHolder.Callback, 
         else if(m_CellStart != null && m_StartIcon != null)
         {
             //How To draw the Pin Icons
-            canvas.drawBitmap(m_StartIcon,m_CellStart.getM_Bounds().left + 12,
-                    m_CellStart.getM_Bounds().top - (int)(m_CellSize/1.5), p);
+            Matrix _mat = new Matrix();
+            _mat.postTranslate(m_CellStart.getM_Bounds().centerX() - m_StartIcon.getWidth()/2,
+                    (int)(m_CellStart.getM_Bounds().centerY() - m_StartIcon.getHeight()));
+            canvas.drawBitmap(m_StartIcon, _mat, p);
         }
 
         if(m_CellEnd != null && m_EndIcon != null)
         {
-            //canvas.drawBitmap(m_EndIcon,m_CellEnd.getM_Bounds().left + 12, m_CellEnd.getM_Bounds().top - (int)(m_CellSize/1.5), p);
             Matrix _matr = new Matrix();
             _matr.postTranslate(m_CellEnd.getM_Bounds().centerX() - m_EndIcon.getWidth()/2,
                     (int)(m_CellEnd.getM_Bounds().centerY() - m_EndIcon.getHeight()));
